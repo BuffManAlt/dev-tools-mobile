@@ -3,59 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile DevTools Injector</title>
+    <title>Mobile DevTools Link Generator</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
-        #setup { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #1e1e1e; color: #fff; padding: 20px; box-sizing: border-box; }
-        input { width: 100%; max-width: 400px; padding: 12px; margin: 10px 0; border: none; border-radius: 4px; font-size: 16px; }
-        button { padding: 12px 24px; border: none; border-radius: 4px; background: #007bff; color: #fff; font-size: 16px; cursor: pointer; }
-        iframe { width: 100%; height: 100%; border: none; display: none; }
+        body { font-family: sans-serif; background: #1a1a1a; color: #fff; padding: 30px; text-align: center; }
+        .container { max-width: 500px; margin: 50px auto; background: #2a2a2a; padding: 30px; border-radius: 8px; }
+        input { width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #444; background: #333; color: #fff; border-radius: 4px; font-size: 16px; }
+        button { background: #28a745; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 94%; }
+        button:hover { background: #218838; }
     </style>
 </head>
 <body>
 
-    <!-- URL Prompt Screen -->
-    <div id="setup">
-        <h3>Enter Target URL (e.g., HackTheBox IP:Port)</h3>
-        <input type="text" id="targetUrl" placeholder="http://154.57.164.73:32041" value="http://154.57.164.73:32041">
-        <button onclick="launchTarget()">Launch with Eruda</button>
-    </div>
+<div class="container">
+    <h2>Mobile DevTools Launcher</h2>
+    <p>Enter your HackTheBox target URL below:</p>
+    <input type="text" id="targetUrl" value="http://154.57.164.73:32041" placeholder="http://154.57.164.73:32041">
+    <button onclick="launchInNewTab()">Launch Target with Eruda</button>
+</div>
 
-    <!-- Target Website Container -->
-    <iframe id="siteFrame"></iframe>
+<script>
+function launchInNewTab() {
+    let url = document.getElementById('targetUrl').value.trim();
+    if (!url) return alert('Please enter a URL');
+    if (!/^https?:\/\//i.test(url)) url = 'http://' + url;
 
-    <!-- Eruda Core and Initialization Scripts -->
-    <script src="https://jsdelivr.net"></script>
+    // The HTML content payload that will execute in the new tab
+    const payload = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Injected Environment</title>
+    <style>
+        html, body { margin:0; padding:0; height:100%; overflow:hidden; }
+        iframe { width:100%; height:100%; border:none; }
+    </style>
+    <script src="https://jsdelivr.net"><\/script>
     <script>
-        // Initialize Eruda on the main GitHub Page container
-        eruda.init();
-
-        function launchTarget() {
-            let url = document.getElementById('targetUrl').value.trim();
-            
-            if (!url) {
-                alert('Please enter a valid URL');
-                return;
-            }
-
-            // Ensure the URL has a protocol
-            if (!/^https?:\/\//i.test(url)) {
-                url = 'http://' + url;
-            }
-
-            const frame = document.getElementById('siteFrame');
-            const setupDiv = document.getElementById('setup');
-
-            // Hide the setup prompt and display the iframe target
-            setupDiv.style.display = 'none';
-            frame.style.width = '100%';
-            frame.style.height = '100%';
-            frame.style.display = 'block';
-            frame.src = url;
-
-            // Open the Eruda console automatically on mobile
+        document.addEventListener("DOMContentLoaded", function() {
+            eruda.init();
             eruda.show();
-        }
-    </script>
+        });
+    <\/script>
+</head>
+<body>
+    <iframe src="${url}"></iframe>
+</body>
+</html>`;
+
+    // Convert the payload into a Base64 Data URI
+    const dataUri = "data:text/html;base64," + btoa(unescape(encodeURIComponent(payload)));
+    
+    // Open the payload in a new tab
+    window.open(dataUri, '_blank');
+}
+</script>
+
 </body>
 </html>
