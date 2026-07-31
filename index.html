@@ -44,7 +44,7 @@
             const container = document.getElementById('setup-container');
 
             // Use a public AllOrigins CORS proxy to fetch the target website data
-            const proxyUrl = `https://allorigins.win{encodeURIComponent(url)}`;
+            const proxyUrl = url;//`https://allorigins.win{encodeURIComponent(url)}`;
 
             fetch(proxyUrl)
                 .then(response => {
