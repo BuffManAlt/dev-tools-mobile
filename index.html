@@ -29,26 +29,31 @@ body {
     font-family:system-ui,Arial,sans-serif;
 }
 
+
 header {
     background:#0d47a1;
     padding:18px;
     text-align:center;
 }
 
+
 h1 {
     margin:0;
     font-size:1.5rem;
 }
+
 
 .container {
     display:flex;
     flex-direction:column;
 }
 
+
 nav {
     padding:10px;
     background:#151a20;
 }
+
 
 nav button {
     width:100%;
@@ -61,14 +66,17 @@ nav button {
     font-size:1rem;
 }
 
+
 nav button:hover {
     background:var(--accent);
     color:black;
 }
 
+
 main {
     padding:12px;
 }
+
 
 .card {
     background:var(--card);
@@ -77,6 +85,7 @@ main {
     margin-bottom:15px;
 }
 
+
 .progress {
     height:18px;
     background:#333;
@@ -84,11 +93,13 @@ main {
     overflow:hidden;
 }
 
+
 .progress-bar {
     height:100%;
     width:0%;
     background:var(--green);
 }
+
 
 .resource {
     background:#252c33;
@@ -97,35 +108,31 @@ main {
     border-radius:8px;
 }
 
+
 .resource button {
     width:100%;
     margin-top:8px;
 }
 
+
 button {
     cursor:pointer;
 }
 
+
 .viewer {
     width:100%;
-    min-height:200px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+    min-height:500px;
 }
 
-.viewer button {
-    padding:14px;
-    background:var(--accent);
-    color:black;
-    border:0;
-    border-radius:8px;
-    font-size:1rem;
+
+.viewer iframe {
+    width:100%;
+    height:500px;
+    border:none;
+    background:white;
 }
 
-.viewer.loading {
-    color:var(--muted);
-}
 
 textarea {
     width:100%;
@@ -136,39 +143,12 @@ textarea {
     border-radius:8px;
 }
 
+
 .timer {
     text-align:center;
     font-size:3rem;
 }
 
-#settingsModal {
-    display:none;
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background:rgba(0,0,0,0.7);
-    justify-content:center;
-    align-items:center;
-    z-index:1000;
-}
-
-#settingsBox {
-    background:var(--card);
-    padding:20px;
-    border-radius:12px;
-    width:90%;
-    max-width:400px;
-}
-
-#settingsBox select, #settingsBox input {
-    width:100%;
-    padding:8px;
-    margin:8px 0;
-    background:#111;
-    color:white;
-    border:1px solid #333;
-    border-radius:6px;
-}
 
 @media(min-width:800px){
 
@@ -192,11 +172,14 @@ main {
 
 }
 
+
 </style>
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -208,7 +191,10 @@ Computer Engineering Preparation
 
 </header>
 
+
+
 <div class="container">
+
 
 <nav>
 
@@ -216,23 +202,26 @@ Computer Engineering Preparation
 
 <div id="subjects"></div>
 
+
 <hr>
+
 
 <button onclick="missionPlan()">
 Today's Mission Plan
 </button>
 
+
 <button onclick="backup()">
 Export Backup
 </button>
 
-<button onclick="openSettings()">
-⚙️ Proxy Settings
-</button>
 
 </nav>
 
+
+
 <main>
+
 
 <div class="card">
 
@@ -246,7 +235,10 @@ Choose a subject.
 
 <div id="resources"></div>
 
+
 </div>
+
+
 
 <div class="card">
 
@@ -258,7 +250,11 @@ Select a PDF or lesson.
 
 </div>
 
+
 </div>
+
+
+
 
 <div class="card">
 
@@ -267,7 +263,10 @@ Select a PDF or lesson.
 <textarea id="notes"
 placeholder="Engineering notebook..."></textarea>
 
+
 </div>
+
+
 
 <div class="card">
 
@@ -284,7 +283,10 @@ class="progress-bar">
 
 <p id="progressText"></p>
 
+
 </div>
+
+
 
 <div class="card">
 
@@ -304,41 +306,19 @@ Reset
 
 </div>
 
+
 </main>
 
 </div>
 
-<div id="settingsModal">
-  <div id="settingsBox">
-    <h3>Proxy Settings</h3>
-    <label>Select Proxy:</label>
-    <select id="proxySelect">
-      <option value="https://api.allorigins.win/raw?url=">AllOrigins</option>
-      <option value="https://corsproxy.io/?">CORSProxy.io</option>
-      <option value="https://cors-anywhere.herokuapp.com/">CORS Anywhere</option>
-      <option value="custom">Custom URL</option>
-    </select>
-    <input id="customProxy" type="text" placeholder="https://your-proxy.com/?url=" style="display:none;">
-    <p style="font-size:0.85rem;color:var(--muted)">Resources are fetched through the proxy, then opened in a new tab.</p>
-    <button onclick="saveProxy()">Save</button>
-    <button onclick="closeSettings()" style="background:#555">Cancel</button>
-  </div>
-</div>
+
+
 
 <script>
 
-const PROXY_KEY = "hub_selected_proxy";
-const CUSTOM_PROXY_KEY = "hub_custom_proxy";
-
-const defaultProxies = [
-  "https://api.allorigins.win/raw?url=",
-  "https://corsproxy.io/?",
-  "https://cors-anywhere.herokuapp.com/"
-];
-
-let selectedProxy = localStorage.getItem(PROXY_KEY) || defaultProxies[0];
 
 const library = {
+
 
 "Calculus":{
 
@@ -363,6 +343,8 @@ url:"https://openstax.org/details/books/calculus-volume-2"
 
 },
 
+
+
 "Physics":{
 
 description:
@@ -386,6 +368,8 @@ url:"https://openstax.org/details/books/university-physics-volume-2"
 
 },
 
+
+
 "Digital Logic":{
 
 description:
@@ -408,6 +392,8 @@ url:"https://www.nand2tetris.org/"
 ]
 
 },
+
+
 
 "Computer Architecture":{
 
@@ -433,6 +419,8 @@ url:"https://www.nand2tetris.org/book"
 
 },
 
+
+
 "Operating Systems":{
 
 description:
@@ -450,6 +438,8 @@ url:"https://pages.cs.wisc.edu/~remzi/OSTEP/"
 
 },
 
+
+
 "C Programming":{
 
 description:
@@ -466,6 +456,8 @@ url:"https://en.cppreference.com/w/c"
 ]
 
 },
+
+
 
 "Circuits":{
 
@@ -485,6 +477,8 @@ url:"https://openstax.org/details/books/university-physics-volume-2"
 
 },
 
+
+
 "Embedded Systems":{
 
 description:
@@ -502,6 +496,8 @@ url:"https://users.ece.utexas.edu/~valvano/Volume1/"
 
 },
 
+
+
 "FPGA":{
 
 description:
@@ -518,6 +514,8 @@ url:"https://www.fpga4fun.com/"
 ]
 
 },
+
+
 
 "Robotics":{
 
@@ -537,12 +535,14 @@ url:"https://ocw.mit.edu/search/?q=robotics"
 
 }
 
+
 };
 
+
 let currentTopic = null;
-let currentBlobUrl = null;
 
 const subjectsDiv = document.getElementById("subjects");
+
 
 Object.keys(library).forEach(subject => {
 
@@ -556,17 +556,7 @@ Object.keys(library).forEach(subject => {
 
 });
 
-// Proxy helper
-function fetchWithProxy(url) {
-    let proxy = selectedProxy;
-    if (proxy === "custom") {
-        proxy = localStorage.getItem(CUSTOM_PROXY_KEY) || "";
-    }
-    if (proxy.includes("allorigins") || proxy.includes("corsproxy.io")) {
-        return proxy + encodeURIComponent(url);
-    }
-    return proxy + url;
-}
+
 
 function loadSubject(subject){
 
@@ -579,15 +569,20 @@ function loadSubject(subject){
     document.getElementById("topicDescription").textContent =
         data.description;
 
+
     let html = "";
 
+
     data.resources.forEach((resource,index)=>{
+
 
         const key =
             subject + "_" + index;
 
+
         const completed =
-            localStorage.getItem(key)? "checked" : "";
+            localStorage.getItem(key) ? "checked" : "";
+
 
         html += `
 
@@ -607,19 +602,24 @@ function loadSubject(subject){
 
             </label>
 
+
             <button onclick='openResource(${JSON.stringify(resource)})'>
 
             Open Lesson
 
             </button>
 
+
         </div>
 
         `;
 
+
     });
 
+
     document.getElementById("resources").innerHTML = html;
+
 
     loadNotes();
 
@@ -627,177 +627,342 @@ function loadSubject(subject){
 
 }
 
-async function openResource(resource){
-    const viewer = document.getElementById("viewer");
-    viewer.innerHTML = `<div class="loading">Fetching through proxy...</div>`;
 
-    if(currentBlobUrl){
-        URL.revokeObjectURL(currentBlobUrl);
-        currentBlobUrl = null;
-    }
 
-    try {
-        const proxiedUrl = fetchWithProxy(resource.url);
-        const res = await fetch(proxiedUrl);
 
-        if(!res.ok) throw new Error("Fetch failed: " + res.status);
 
-        const blob = await res.blob();
-        currentBlobUrl = URL.createObjectURL(blob);
+function openResource(resource){
 
-        const isPdf = resource.url.toLowerCase().endsWith(".pdf") || blob.type === "application/pdf";
 
-        viewer.innerHTML = `
-            <p><b>${resource.title}</b></p>
-            <p class="loading">Downloaded via proxy. Click to open.</p>
-            <button onclick="window.open(currentBlobUrl, '_blank')">Open in New Tab</button>
-            <button onclick="window.open('${resource.url}', '_blank')" style="background:#555">Open Original Link</button>
-        `;
+const viewer =
+document.getElementById("viewer");
 
-    } catch(err) {
-        viewer.innerHTML = `
-            <p style="color:red">Failed to fetch through proxy.</p>
-            <p>${err.message}</p>
-            <button onclick="window.open('${resource.url}', '_blank')">Open Original Link</button>
-        `;
-    }
+
+
+if(resource.type==="pdf"){
+
+
+viewer.innerHTML = `
+
+<iframe src="${resource.url}"></iframe>
+
+`;
+
+
 }
+
+
+else{
+
+
+viewer.innerHTML = `
+
+<iframe src="${resource.url}"></iframe>
+
+<br>
+
+<a href="${resource.url}" target="_blank">
+
+Open in Browser
+
+</a>
+
+`;
+
+}
+
+
+}
+
+
+
 
 function toggleComplete(key){
 
+
 if(localStorage.getItem(key)){
+
 localStorage.removeItem(key);
+
 }
+
 else{
+
 localStorage.setItem(key,"complete");
+
 }
+
 
 updateProgress();
 
+
 }
+
+
+
+
 
 function updateProgress(){
 
+
 let total=0;
+
 let done=0;
 
+
 Object.keys(library).forEach(subject=>{
+
+
 library[subject].resources.forEach((r,i)=>{
+
+
 total++;
+
+
 if(localStorage.getItem(subject+"_"+i)){
+
 done++;
-}
-});
-});
-
-let percent = Math.round((done/total)*100);
-
-document.getElementById("progressBar").style.width = percent+"%";
-document.getElementById("progressText").textContent = percent+"% complete";
 
 }
+
+
+});
+
+
+});
+
+
+
+let percent =
+Math.round(
+(done/total)*100
+);
+
+
+
+document.getElementById("progressBar")
+.style.width =
+percent+"%";
+
+
+document.getElementById("progressText")
+.textContent =
+percent+"% complete";
+
+
+}
+
+
+
+
 
 function loadNotes(){
 
-const box = document.getElementById("resources");
-const notesBox = document.getElementById("notes");
-notesBox.value = localStorage.getItem("notes_"+currentTopic) || "";
 
-notesBox.oninput=function(){
-localStorage.setItem("notes_"+currentTopic, notesBox.value);
+const box =
+document.getElementById("notes");
+
+
+box.value =
+localStorage.getItem(
+"notes_"+currentTopic
+) || "";
+
+
+
+box.oninput=function(){
+
+
+localStorage.setItem(
+"notes_"+currentTopic,
+box.value
+);
+
+
 };
 
+
 }
+
+
+
+
 
 function missionPlan(){
 
-const subjects = Object.keys(library);
-const day = new Date().getDate();
-const first = subjects[day % subjects.length];
-const second = subjects[(day+4)%subjects.length];
+
+const subjects =
+Object.keys(library);
+
+
+const day =
+new Date().getDate();
+
+
+const first =
+subjects[day % subjects.length];
+
+
+const second =
+subjects[(day+4)%subjects.length];
+
 
 alert(
+
 "Today's Engineering Mission:\n\n"+
-"30 minutes:\n"+ first +
-"\n\n30 minutes:\n"+ second +
+
+"30 minutes:\n"+
+first+
+
+"\n\n30 minutes:\n"+
+second+
+
 "\n\nWrite one notebook entry."
+
 );
 
+
 }
+
+
+
+
 
 let seconds = 3600;
+
 let timer;
 
+
+
 function startTimer(){
+
+
 clearInterval(timer);
+
+
+
 timer=setInterval(()=>{
+
+
 seconds--;
-let minutes = Math.floor(seconds/60);
-let remaining = seconds%60;
-document.getElementById("timer").textContent =
-minutes+ ":" + (remaining<10?"0":"") + remaining;
+
+
+let minutes =
+Math.floor(seconds/60);
+
+
+let remaining =
+seconds%60;
+
+
+
+document.getElementById("timer")
+.textContent =
+
+minutes+
+":"+
+(remaining<10?"0":"")+
+remaining;
+
+
+
 if(seconds<=0){
+
 clearInterval(timer);
+
 }
+
+
 },1000);
+
+
 }
+
+
+
+
 
 function resetTimer(){
+
+
 clearInterval(timer);
+
+
 seconds=3600;
-document.getElementById("timer").textContent="60:00";
+
+
+document.getElementById("timer")
+.textContent="60:00";
+
+
 }
+
+
+
+
 
 function backup(){
+
+
 let backup={};
+
+
 for(let i=0;i<localStorage.length;i++){
-const key = localStorage.key(i);
-backup[key]= localStorage.getItem(key);
+
+
+const key =
+localStorage.key(i);
+
+
+backup[key]=
+localStorage.getItem(key);
+
+
 }
 
-const blob = new Blob([JSON.stringify(backup,null,2)], {type:"application/json"});
-const url = URL.createObjectURL(blob);
-const link = document.createElement("a");
+
+
+const blob =
+new Blob(
+[
+JSON.stringify(backup,null,2)
+],
+{
+type:"application/json"
+}
+);
+
+
+
+const url =
+URL.createObjectURL(blob);
+
+
+const link =
+document.createElement("a");
+
+
 link.href=url;
-link.download= "engineering_hub_backup.json";
+
+
+link.download=
+"engineering_hub_backup.json";
+
+
 link.click();
+
+
 }
 
-// Settings functions
-function openSettings() {
-    document.getElementById("settingsModal").style.display = "flex";
-    const select = document.getElementById("proxySelect");
-    select.value = selectedProxy;
-    if (selectedProxy === "custom") {
-        document.getElementById("customProxy").style.display = "block";
-        document.getElementById("customProxy").value = localStorage.getItem(CUSTOM_PROXY_KEY) || "";
-    }
-}
 
-function closeSettings() {
-    document.getElementById("settingsModal").style.display = "none";
-}
 
-function saveProxy() {
-    const select = document.getElementById("proxySelect");
-    selectedProxy = select.value;
-    localStorage.setItem(PROXY_KEY, selectedProxy);
-    if (selectedProxy === "custom") {
-        const custom = document.getElementById("customProxy").value;
-        localStorage.setItem(CUSTOM_PROXY_KEY, custom);
-    }
-    closeSettings();
-    alert("Proxy saved. New resources will use: " + selectedProxy);
-}
 
-document.getElementById("proxySelect").onchange = function() {
-    document.getElementById("customProxy").style.display =
-        this.value === "custom"? "block" : "none";
-}
 
 updateProgress();
 
 </script>
 
+
 </body>
+
 </html>
