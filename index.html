@@ -1,54 +1,802 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile DevTools Launcher</title>
-    <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: #fff; padding: 30px; text-align: center; margin: 0; }
-        .container { max-width: 500px; margin: 50px auto; background: #2a2a2a; padding: 30px; border-radius: 8px; box-sizing: border-box; }
-        input { width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #444; background: #333; color: #fff; border-radius: 4px; font-size: 16px; }
-        button { background: #007bff; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 94%; }
-        button:hover { background: #0056b3; }
-    </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Engineering Hub</title>
+
+<style>
+
+:root {
+    --bg:#101418;
+    --card:#1b2229;
+    --accent:#4fc3f7;
+    --green:#4caf50;
+    --text:#f5f5f5;
+    --muted:#aaa;
+}
+
+* {
+    box-sizing:border-box;
+}
+
+body {
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:system-ui,Arial,sans-serif;
+}
+
+header {
+    background:#0d47a1;
+    padding:18px;
+    text-align:center;
+}
+
+h1 {
+    margin:0;
+    font-size:1.5rem;
+}
+
+.container {
+    display:flex;
+    flex-direction:column;
+}
+
+nav {
+    padding:10px;
+    background:#151a20;
+}
+
+nav button {
+    width:100%;
+    margin:5px 0;
+    padding:12px;
+    border:0;
+    border-radius:8px;
+    background:#263238;
+    color:white;
+    font-size:1rem;
+}
+
+nav button:hover {
+    background:var(--accent);
+    color:black;
+}
+
+main {
+    padding:12px;
+}
+
+.card {
+    background:var(--card);
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.progress {
+    height:18px;
+    background:#333;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress-bar {
+    height:100%;
+    width:0%;
+    background:var(--green);
+}
+
+.resource {
+    background:#252c33;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+}
+
+.resource button {
+    width:100%;
+    margin-top:8px;
+}
+
+button {
+    cursor:pointer;
+}
+
+.viewer {
+    width:100%;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.viewer button {
+    padding:14px;
+    background:var(--accent);
+    color:black;
+    border:0;
+    border-radius:8px;
+    font-size:1rem;
+}
+
+.viewer.loading {
+    color:var(--muted);
+}
+
+textarea {
+    width:100%;
+    min-height:150px;
+    background:#111;
+    color:white;
+    padding:10px;
+    border-radius:8px;
+}
+
+.timer {
+    text-align:center;
+    font-size:3rem;
+}
+
+#settingsModal {
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+}
+
+#settingsBox {
+    background:var(--card);
+    padding:20px;
+    border-radius:12px;
+    width:90%;
+    max-width:400px;
+}
+
+#settingsBox select, #settingsBox input {
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+    background:#111;
+    color:white;
+    border:1px solid #333;
+    border-radius:6px;
+}
+
+@media(min-width:800px){
+
+.container {
+    flex-direction:row;
+}
+
+nav {
+    width:260px;
+    min-height:100vh;
+}
+
+nav button {
+    width:100%;
+}
+
+main {
+    flex:1;
+    padding:25px;
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-<div id="ui-container" class="container">
-    <h2>Mobile DevTools Launcher</h2>
-    <p>Enter your HackTheBox target URL below: V1.4</p>
-    <input type="text" id="targetUrl" value="http://154.57.164.73:32041" placeholder="http://154.57.164.73:32041">
-    <button onclick="launchInSameTab()">Launch Target in This Tab</button>
+<header>
+
+<h1>Engineering Hub</h1>
+
+<p>
+Computer Engineering Preparation
+</p>
+
+</header>
+
+<div class="container">
+
+<nav>
+
+<h3>Subjects</h3>
+
+<div id="subjects"></div>
+
+<hr>
+
+<button onclick="missionPlan()">
+Today's Mission Plan
+</button>
+
+<button onclick="backup()">
+Export Backup
+</button>
+
+<button onclick="openSettings()">
+⚙️ Proxy Settings
+</button>
+
+</nav>
+
+<main>
+
+<div class="card">
+
+<h2 id="topicTitle">
+Select Topic
+</h2>
+
+<p id="topicDescription">
+Choose a subject.
+</p>
+
+<div id="resources"></div>
+
 </div>
 
-<!-- Dynamically loaded Eruda dependency -->
-<script src="https://jsdelivr.net"></script>
+<div class="card">
+
+<h2>Resource Viewer</h2>
+
+<div id="viewer" class="viewer">
+
+Select a PDF or lesson.
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Notes</h2>
+
+<textarea id="notes"
+placeholder="Engineering notebook..."></textarea>
+
+</div>
+
+<div class="card">
+
+<h2>Progress</h2>
+
+<div class="progress">
+
+<div id="progressBar"
+class="progress-bar">
+
+</div>
+
+</div>
+
+<p id="progressText"></p>
+
+</div>
+
+<div class="card">
+
+<h2>Study Timer</h2>
+
+<div class="timer" id="timer">
+60:00
+</div>
+
+<button onclick="startTimer()">
+Start
+</button>
+
+<button onclick="resetTimer()">
+Reset
+</button>
+
+</div>
+
+</main>
+
+</div>
+
+<div id="settingsModal">
+  <div id="settingsBox">
+    <h3>Proxy Settings</h3>
+    <label>Select Proxy:</label>
+    <select id="proxySelect">
+      <option value="https://api.allorigins.win/raw?url=">AllOrigins</option>
+      <option value="https://corsproxy.io/?">CORSProxy.io</option>
+      <option value="https://cors-anywhere.herokuapp.com/">CORS Anywhere</option>
+      <option value="custom">Custom URL</option>
+    </select>
+    <input id="customProxy" type="text" placeholder="https://your-proxy.com/?url=" style="display:none;">
+    <p style="font-size:0.85rem;color:var(--muted)">Resources are fetched through the proxy, then opened in a new tab.</p>
+    <button onclick="saveProxy()">Save</button>
+    <button onclick="closeSettings()" style="background:#555">Cancel</button>
+  </div>
+</div>
+
 <script>
-function launchInSameTab() {
-    let url = document.getElementById('targetUrl').value.trim();
-    if (!url) return alert('Please enter a URL');
-    if (!/^https?:\/\//i.test(url)) url = 'http://' + url;
 
-    // 1. Wipe out the selection UI entirely
-    document.getElementById('ui-container').remove();
-    
-    // 2. Adjust body properties to host a full-screen frame layout
-    document.body.style.padding = "0";
-    document.body.style.height = "100vh";
-    document.body.style.overflow = "hidden";
+const PROXY_KEY = "hub_selected_proxy";
+const CUSTOM_PROXY_KEY = "hub_custom_proxy";
 
-    // 3. Create and append the target frame layout
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "none";
-    document.body.appendChild(iframe);
+const defaultProxies = [
+  "https://api.allorigins.win/raw?url=",
+  "https://corsproxy.io/?",
+  "https://cors-anywhere.herokuapp.com/"
+];
 
-    // 4. Initialize and display Eruda within the current context
-    eruda.init();
-    eruda.show();
+let selectedProxy = localStorage.getItem(PROXY_KEY) || defaultProxies[0];
+
+const library = {
+
+"Calculus":{
+
+description:
+"Calculus foundation for engineering.",
+
+resources:[
+
+{
+title:"OpenStax Calculus Volume 1",
+type:"web",
+url:"https://openstax.org/details/books/calculus-volume-1"
+},
+
+{
+title:"OpenStax Calculus Volume 2",
+type:"web",
+url:"https://openstax.org/details/books/calculus-volume-2"
 }
+
+]
+
+},
+
+"Physics":{
+
+description:
+"Mechanics, electricity, and magnetism.",
+
+resources:[
+
+{
+title:"OpenStax University Physics Volume 1",
+type:"web",
+url:"https://openstax.org/details/books/university-physics-volume-1"
+},
+
+{
+title:"OpenStax University Physics Volume 2",
+type:"web",
+url:"https://openstax.org/details/books/university-physics-volume-2"
+}
+
+]
+
+},
+
+"Digital Logic":{
+
+description:
+"Foundation for FPGA and hardware design.",
+
+resources:[
+
+{
+title:"MIT Computation Structures",
+type:"web",
+url:"https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/"
+},
+
+{
+title:"Nand2Tetris",
+type:"web",
+url:"https://www.nand2tetris.org/"
+}
+
+]
+
+},
+
+"Computer Architecture":{
+
+description:
+"CPU design and computer organization.",
+
+resources:[
+
+{
+title:"MIT 6.004 Lecture Notes",
+type:"web",
+url:"https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/resources/lecture-notes/"
+},
+
+{
+title:"Nand2Tetris Book",
+type:"web",
+url:"https://www.nand2tetris.org/book"
+
+}
+
+]
+
+},
+
+"Operating Systems":{
+
+description:
+"Processes, memory, concurrency, and systems.",
+
+resources:[
+
+{
+title:"Operating Systems Three Easy Pieces",
+type:"web",
+url:"https://pages.cs.wisc.edu/~remzi/OSTEP/"
+}
+
+]
+
+},
+
+"C Programming":{
+
+description:
+"C programming for embedded systems.",
+
+resources:[
+
+{
+title:"C Language Reference",
+type:"web",
+url:"https://en.cppreference.com/w/c"
+}
+
+]
+
+},
+
+"Circuits":{
+
+description:
+"Electrical engineering fundamentals.",
+
+resources:[
+
+{
+title:"OpenStax Physics Electricity Sections",
+type:"web",
+url:"https://openstax.org/details/books/university-physics-volume-2"
+
+}
+
+]
+
+},
+
+"Embedded Systems":{
+
+description:
+"Firmware and hardware interaction.",
+
+resources:[
+
+{
+title:"Embedded Systems Resources",
+type:"web",
+url:"https://users.ece.utexas.edu/~valvano/Volume1/"
+}
+
+]
+
+},
+
+"FPGA":{
+
+description:
+"Your primary specialization: digital hardware.",
+
+resources:[
+
+{
+title:"FPGA Introduction",
+type:"web",
+url:"https://www.fpga4fun.com/"
+}
+
+]
+
+},
+
+"Robotics":{
+
+description:
+"Autonomous systems, sensors, and control.",
+
+resources:[
+
+{
+title:"MIT Robotics",
+type:"web",
+url:"https://ocw.mit.edu/search/?q=robotics"
+
+}
+
+]
+
+}
+
+};
+
+let currentTopic = null;
+let currentBlobUrl = null;
+
+const subjectsDiv = document.getElementById("subjects");
+
+Object.keys(library).forEach(subject => {
+
+    const button = document.createElement("button");
+
+    button.textContent = subject;
+
+    button.onclick = () => loadSubject(subject);
+
+    subjectsDiv.appendChild(button);
+
+});
+
+// Proxy helper
+function fetchWithProxy(url) {
+    let proxy = selectedProxy;
+    if (proxy === "custom") {
+        proxy = localStorage.getItem(CUSTOM_PROXY_KEY) || "";
+    }
+    if (proxy.includes("allorigins") || proxy.includes("corsproxy.io")) {
+        return proxy + encodeURIComponent(url);
+    }
+    return proxy + url;
+}
+
+function loadSubject(subject){
+
+    currentTopic = subject;
+
+    const data = library[subject];
+
+    document.getElementById("topicTitle").textContent = subject;
+
+    document.getElementById("topicDescription").textContent =
+        data.description;
+
+    let html = "";
+
+    data.resources.forEach((resource,index)=>{
+
+        const key =
+            subject + "_" + index;
+
+        const completed =
+            localStorage.getItem(key)? "checked" : "";
+
+        html += `
+
+        <div class="resource">
+
+            <b>${resource.title}</b>
+
+            <br>
+
+            <label>
+
+            <input type="checkbox"
+            ${completed}
+            onclick="toggleComplete('${key}')">
+
+            Completed
+
+            </label>
+
+            <button onclick='openResource(${JSON.stringify(resource)})'>
+
+            Open Lesson
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("resources").innerHTML = html;
+
+    loadNotes();
+
+    updateProgress();
+
+}
+
+async function openResource(resource){
+    const viewer = document.getElementById("viewer");
+    viewer.innerHTML = `<div class="loading">Fetching through proxy...</div>`;
+
+    if(currentBlobUrl){
+        URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = null;
+    }
+
+    try {
+        const proxiedUrl = fetchWithProxy(resource.url);
+        const res = await fetch(proxiedUrl);
+
+        if(!res.ok) throw new Error("Fetch failed: " + res.status);
+
+        const blob = await res.blob();
+        currentBlobUrl = URL.createObjectURL(blob);
+
+        const isPdf = resource.url.toLowerCase().endsWith(".pdf") || blob.type === "application/pdf";
+
+        viewer.innerHTML = `
+            <p><b>${resource.title}</b></p>
+            <p class="loading">Downloaded via proxy. Click to open.</p>
+            <button onclick="window.open(currentBlobUrl, '_blank')">Open in New Tab</button>
+            <button onclick="window.open('${resource.url}', '_blank')" style="background:#555">Open Original Link</button>
+        `;
+
+    } catch(err) {
+        viewer.innerHTML = `
+            <p style="color:red">Failed to fetch through proxy.</p>
+            <p>${err.message}</p>
+            <button onclick="window.open('${resource.url}', '_blank')">Open Original Link</button>
+        `;
+    }
+}
+
+function toggleComplete(key){
+
+if(localStorage.getItem(key)){
+localStorage.removeItem(key);
+}
+else{
+localStorage.setItem(key,"complete");
+}
+
+updateProgress();
+
+}
+
+function updateProgress(){
+
+let total=0;
+let done=0;
+
+Object.keys(library).forEach(subject=>{
+library[subject].resources.forEach((r,i)=>{
+total++;
+if(localStorage.getItem(subject+"_"+i)){
+done++;
+}
+});
+});
+
+let percent = Math.round((done/total)*100);
+
+document.getElementById("progressBar").style.width = percent+"%";
+document.getElementById("progressText").textContent = percent+"% complete";
+
+}
+
+function loadNotes(){
+
+const box = document.getElementById("resources");
+const notesBox = document.getElementById("notes");
+notesBox.value = localStorage.getItem("notes_"+currentTopic) || "";
+
+notesBox.oninput=function(){
+localStorage.setItem("notes_"+currentTopic, notesBox.value);
+};
+
+}
+
+function missionPlan(){
+
+const subjects = Object.keys(library);
+const day = new Date().getDate();
+const first = subjects[day % subjects.length];
+const second = subjects[(day+4)%subjects.length];
+
+alert(
+"Today's Engineering Mission:\n\n"+
+"30 minutes:\n"+ first +
+"\n\n30 minutes:\n"+ second +
+"\n\nWrite one notebook entry."
+);
+
+}
+
+let seconds = 3600;
+let timer;
+
+function startTimer(){
+clearInterval(timer);
+timer=setInterval(()=>{
+seconds--;
+let minutes = Math.floor(seconds/60);
+let remaining = seconds%60;
+document.getElementById("timer").textContent =
+minutes+ ":" + (remaining<10?"0":"") + remaining;
+if(seconds<=0){
+clearInterval(timer);
+}
+},1000);
+}
+
+function resetTimer(){
+clearInterval(timer);
+seconds=3600;
+document.getElementById("timer").textContent="60:00";
+}
+
+function backup(){
+let backup={};
+for(let i=0;i<localStorage.length;i++){
+const key = localStorage.key(i);
+backup[key]= localStorage.getItem(key);
+}
+
+const blob = new Blob([JSON.stringify(backup,null,2)], {type:"application/json"});
+const url = URL.createObjectURL(blob);
+const link = document.createElement("a");
+link.href=url;
+link.download= "engineering_hub_backup.json";
+link.click();
+}
+
+// Settings functions
+function openSettings() {
+    document.getElementById("settingsModal").style.display = "flex";
+    const select = document.getElementById("proxySelect");
+    select.value = selectedProxy;
+    if (selectedProxy === "custom") {
+        document.getElementById("customProxy").style.display = "block";
+        document.getElementById("customProxy").value = localStorage.getItem(CUSTOM_PROXY_KEY) || "";
+    }
+}
+
+function closeSettings() {
+    document.getElementById("settingsModal").style.display = "none";
+}
+
+function saveProxy() {
+    const select = document.getElementById("proxySelect");
+    selectedProxy = select.value;
+    localStorage.setItem(PROXY_KEY, selectedProxy);
+    if (selectedProxy === "custom") {
+        const custom = document.getElementById("customProxy").value;
+        localStorage.setItem(CUSTOM_PROXY_KEY, custom);
+    }
+    closeSettings();
+    alert("Proxy saved. New resources will use: " + selectedProxy);
+}
+
+document.getElementById("proxySelect").onchange = function() {
+    document.getElementById("customProxy").style.display =
+        this.value === "custom"? "block" : "none";
+}
+
+updateProgress();
+
 </script>
 
 </body>
